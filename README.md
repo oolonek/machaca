@@ -1,37 +1,21 @@
 # machaca
 
-Checks mass-spectrometry filenames in tabular sample metadata against an extracted sapayoa dataset. The first target is the Zenodo record `10018590` (`enpkg_toy_dataset.zip`); extract the archive outside the crate before running machaca. It does not modify the dataset.
+Machaca checks whether the raw mass-spectrometry files named in a dataset's sample records are actually present. It helps catch missing or mismatched files before later analysis, without changing the dataset.
 
-```sh
-cargo run -- check /media/nvme8tb/isla-gabriela/sapayoa/zenodo-10018590
-```
+The name refers to the machaca, *Fulgora laternaria* ([Wikidata Q1934998](https://www.wikidata.org/wiki/Q1934998); [Catalogue of Life 6JQHB](https://www.catalogueoflife.org/data/taxon/6JQHB)), a lanternfly.
 
-In a terminal, choose the metadata TSV/CSV and mass-spectrometry directory from the displayed candidates. For scripts, specify both paths relative to the extracted dataset directory (or use absolute paths within it):
+[![Fulgora laternaria specimen with its elongated head](https://commons.wikimedia.org/wiki/Special:FilePath/Fulgora%20laternaria%20TPopp.jpg?width=500)](https://commons.wikimedia.org/wiki/File:Fulgora_laternaria_TPopp.jpg)
 
-```sh
-cargo run -- check /media/nvme8tb/isla-gabriela/sapayoa/zenodo-10018590 \
-  --metadata metadata/metadata.tsv --ms-dir msdata/raw
-```
+Photo: [Tanja Popp](https://commons.wikimedia.org/wiki/File:Fulgora_laternaria_TPopp.jpg), [CC BY-SA 4.0](https://creativecommons.org/licenses/by-sa/4.0/).
 
-Machaca detects spectrum filename columns by `filename` in the header or a spectrum filename in their cells, except that MassIVE's `file_path` and `directus_filename` are ordinary metadata and never spectrum-reference columns. The `filename` column is still validated strictly: entries must be spectrum basenames, not paths or extensionless stems. Zenodo's `positive_filename` and `negative_filename` remain spectrum-reference columns. It reports the number of nonempty entries per detected column and recursively scans the selected directory for `.mzML`, `.mzXML`, `.mzData` and their `.gz` variants (case-insensitive extension). Matches use exact, case-sensitive basenames. It reports invalid entries, duplicate references, missing referenced files, files without entries, and ambiguous duplicate basenames as failures (nonzero exit). Processed `.mgf`/`.csv` files are not spectra and are excluded; interactive metadata discovery also omits TSV/CSV files inside `processed` and `raw` directories. Supply `--metadata` explicitly if the metadata file lives in either directory.
+## In the flock
 
-The current Zenodo toy dataset has three metadata rows, three positive and three negative filename entries, and six matching raw `.mzXML` files.
+Sapayoa downloads datasets; once an archive is extracted, Machaca compares its sample metadata with the raw files. This checks file references, not the identity of any chemical in a sample.
 
-For the original MassIVE `MSV000102993` extraction, select its original metadata TSV and the `peak/peak` raw tree:
+## Start here
 
-```sh
-cargo run -- check /media/nvme8tb/isla-gabriela/sapayoa/MSV000102993 \
-  --metadata metadata/metadata/dbgi_massive_metadata_20260806.tsv --ms-dir peak/peak
-```
+For a small example of the full journey, follow [Mato's Zenodo toy-dataset walkthrough](../mato/TECHNICAL.md#example-download-the-zenodo-toy-dataset-and-export-a-kg). To run Machaca yourself, first extract the downloaded Zenodo ZIP outside this crate, then follow the [technical guide](TECHNICAL.md#check-an-extracted-dataset).
 
-When the extraction has all referenced spectra, validation succeeds without rewriting or dropping any metadata fields. `file_path` values such as `dbgi_msdata/sample.mzML`, extensionless `directus_filename` stems, taxon names, and `ionization_mode` remain in the source TSV for ingestion; only `filename` is used to map spectra. Missing or malformed `filename` references still fail.
+## Learn more
 
-For a first-N rehearsal against the unchanged original MassIVE extraction, add
-`--max-rows 100` to the check command. Only the first 100 metadata records and
-their referenced physical spectra are validated; unreferenced raw files and
-later metadata rows are ignored. Within the selected records, malformed or
-duplicate filenames and missing or ambiguous physical matches still fail.
-Omit the option to check every metadata row and require every raw spectrum to
-have a reference, as before. `N` must be a positive integer.
-
-Rust callers such as peregrino can use `machaca::check(metadata_path, ms_dir)` for complete one-to-one validation or `machaca::check_first(metadata_path, ms_dir, max_rows)` for the first N records only. Each returns the validated filename-column indexes and basename-to-file-path mapping; failures never publish a partial mapping.
+The [technical guide](TECHNICAL.md) explains interactive and scripted checks, which filenames count, what failures mean, MassIVE metadata checks, and the Rust interface.
