@@ -2,7 +2,7 @@
 
 Machaca checks whether the raw mass-spectrometry files named in a dataset's sample records are actually present. It helps catch missing or mismatched files before later analysis, without changing the dataset.
 
-The flock turns mass-spectrometry samples and measurements into traceable evidence for possible chemical matches; it can also export a knowledge graph. Machaca checks that the dataset's named raw files are there before later work. Start with the [flock overview](https://github.com/oolonek/flock-roadmap/blob/main/README.md) to see how the tools fit together.
+The flock turns mass-spectrometry samples and measurements into traceable evidence for possible chemical matches; it can also export a knowledge graph. Machaca checks that the dataset's named raw files are there before later work. Start with the [flock overview](https://github.com/oolonek/isla-gabriola-flock/blob/main/README.md) to see how the tools fit together.
 
 The name refers to the machaca, *Fulgora laternaria* ([Wikidata Q1934998](https://www.wikidata.org/wiki/Q1934998); [Catalogue of Life 6JQHB](https://www.catalogueoflife.org/data/taxon/6JQHB)), a lanternfly.
 
