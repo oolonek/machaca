@@ -22,4 +22,6 @@ For a small example after the overview, follow [Mato's Zenodo toy-dataset walkth
 
 The [technical guide](TECHNICAL.md) explains interactive and scripted checks, which filenames count, what failures mean, MassIVE metadata checks, and the Rust interface.
 
+Machaca is available under either the [MIT license](LICENSE-MIT) or the [Apache 2.0 license](LICENSE-APACHE).
+
 *Naming note: For new species names, we take inspiration from [colonizer](https://crates.io/crates/colonizer)'s `inspire` mode, which suggests names from the Catalogue of Life, rather than inventing each crate name ourselves.*
